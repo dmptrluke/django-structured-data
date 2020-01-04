@@ -14,21 +14,47 @@ INSTALLED_APPS = [
 ## Use
 
 ### In models
-Define a `structured_data` property on your models.
+Define a `structured_data` property on your models. This is written in a standard JSON-LD format. Included
+ below is a complicated example.
 ```python
     @property
     def structured_data(self):
-        return {
+        url = SITE_URL + self.get_absolute_url()
+        data = {
             '@type': 'BlogPosting',
-            'title': self.title,
+            'headline': self.title,
+            'author': {
+                '@type': 'Person',
+                'name': self.author
+            },
+            'datePublished': self.created.strftime('%Y-%m-%d'),
+            'dateModified': self.modified.strftime('%Y-%m-%d'),
+            'url': url,
+            'mainEntityOfPage': {
+                '@type': 'WebPage',
+                '@id': url
+            },
         }
+        if self.image:
+            data['image'] = SITE_URL + self.image.url
+
+        return data
 
 ```
 
 ### In templates
 Use the `json_ld_for` template tag to render your structured data as JSON-LD.
 ```djangotemplate
+{% load jsonld %}
 {% json_ld_for post %}
+```
+
+A second template tag, `og_for`, is also included. This attempts to translate your JSON-LD 
+data to Open Graph tags that can be read by Facebook, Twitter, Telegram 
+and more.
+ ```djangotemplate
+{% load opengraph %}
+{% og_for post %}
 ```
 
 ## License
