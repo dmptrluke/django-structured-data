@@ -25,7 +25,7 @@ def og_for(obj):
 
         # parse a URL from the JSON-LD
         if 'url' in data:
-            properties['og:image'] = data['url']
+            properties['og:url'] = data['url']
 
         # special cased actions for articles
         if data['@type'] in ("BlogPosting", "Article", "NewsArticle"):
