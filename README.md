@@ -1,5 +1,5 @@
 # Django Structured Data  [![PyPI](https://img.shields.io/pypi/v/django-structured-data)](https://pypi.org/project/django-structured-data/)
-A template tag to assist in adding structured data to views and models.
+A template tag to assist in adding structured metadata to views and models.
 
 ## Install
 
@@ -49,19 +49,26 @@ Use the `json_ld_for` template tag to render your structured data as JSON-LD.
 {% json_ld_for post %}
 ```
 
-A second template tag, `og_for`, is also included. This attempts to translate your JSON-LD 
-data to Open Graph tags that can be read by Facebook, Twitter, Telegram 
+A second template tag, `og_for`, is also included. This attempts to translate your JSON-LD
+data to Open Graph tags that can be read by Facebook, Twitter, Telegram
 and more.
  ```djangotemplate
 {% load opengraph %}
 {% og_for post %}
 ```
 
+A third template tag, `meta_for`, will render the **description** field from
+your JSON-LD data as a standard HTML meta description tag.
+ ```djangotemplate
+{% load meta %}
+{% meta_for post %}
+```
+
 ## License
 
 This software is released under the MIT license.
 ```
-Copyright (c) 2019 Luke Rogers
+Copyright (c) 2019-2020 Luke Rogers
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

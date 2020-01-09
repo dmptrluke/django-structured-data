@@ -2,7 +2,7 @@ from django import template
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
-from ..util import sub_defaults, json_encode
+from ..util import json_encode, sub_defaults
 
 register = template.Library()
 

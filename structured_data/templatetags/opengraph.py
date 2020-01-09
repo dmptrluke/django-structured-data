@@ -1,6 +1,6 @@
 from django import template
 
-from ..util import sub_defaults, build_tags
+from ..util import build_og_tags, sub_defaults
 
 register = template.Library()
 
@@ -38,6 +38,6 @@ def og_for(obj):
             if 'dateModified' in data:
                 properties['article:modified_time'] = data['dateModified']
 
-        return build_tags(properties)
+        return build_og_tags(properties)
     else:
         return ""
