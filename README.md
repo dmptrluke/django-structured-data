@@ -1,5 +1,5 @@
 # Django Structured Data  [![PyPI](https://img.shields.io/pypi/v/django-structured-data)](https://pypi.org/project/django-structured-data/)
-A template tag to assist in adding structured metadata to views and models.
+Template tags to assist in adding structured metadata to views and models.
 
 ## Install
 

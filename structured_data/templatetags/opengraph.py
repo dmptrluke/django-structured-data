@@ -21,7 +21,14 @@ def og_for(obj):
 
         # parse an image from the JSON-LD
         if 'image' in data:
-            properties['og:image'] = data['image']
+            image = data['image']
+            if isinstance(image, dict):
+                properties['og:image'] = image['url']
+                if 'width' in image and 'height' in image:
+                    properties['og:image:width'] = image['width']
+                    properties['og:image:height'] = image['height']
+            else:
+                properties['og:image'] = image
 
         # parse a URL from the JSON-LD
         if 'url' in data:
