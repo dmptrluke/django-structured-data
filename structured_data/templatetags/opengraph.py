@@ -34,6 +34,10 @@ def og_for(obj):
         if 'url' in data:
             properties['og:url'] = data['url']
 
+        # special cased actions for websites
+        if data['@type'] == "WebSite":
+            properties['og:type'] = 'website'
+
         # special cased actions for articles
         if data['@type'] in ("BlogPosting", "Article", "NewsArticle"):
             properties['og:type'] = 'article'
