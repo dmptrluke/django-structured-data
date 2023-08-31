@@ -68,7 +68,7 @@ your JSON-LD data as a standard HTML meta description tag.
 
 This software is released under the MIT license.
 ```
-Copyright (c) 2019-2020 Luke Rogers
+Copyright (c) 2019-2024 Luke Rogers
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
