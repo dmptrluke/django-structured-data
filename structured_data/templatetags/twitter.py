@@ -18,8 +18,12 @@ def twitter_for(obj):
 
         if 'image' in data:
             image = data['image']
-            if isinstance(image, dict) and 'caption' in image:
-                properties['twitter:image:alt'] = image['caption']
+            if isinstance(image, dict):
+                properties['twitter:image'] = image['url']
+                if 'caption' in image:
+                    properties['twitter:image:alt'] = image['caption']
+            else:
+                properties['twitter:image'] = image
 
         if 'author' in data:
             name = extract_author_name(data['author'])

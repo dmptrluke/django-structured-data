@@ -111,10 +111,11 @@ The `twitter_for` tag generates Twitter Card meta tags.
 | JSON-LD | Twitter Tag |
 |---|---|
 | `@type` | `twitter:card` (`summary_large_image` for articles, events, and recipes; `summary` otherwise) |
+| `image` (string or dict) | `twitter:image` |
 | `image.caption` | `twitter:image:alt` |
 | `author` (string or `.name`) | `twitter:creator` |
 
-Twitter falls back to Open Graph tags for title, description, and image, so `og_for` should be used alongside `twitter_for`.
+Twitter falls back to Open Graph tags for title and description, so `og_for` should be used alongside `twitter_for`.
 
 #### Global tags
 Some Open Graph properties like `og:site_name` and `og:locale` are site-wide and not specific to any one object. Add these directly in your base template:

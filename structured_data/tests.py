@@ -439,6 +439,32 @@ class TwitterForTests(SimpleTestCase):
         assert 'summary' in result
         assert 'summary_large_image' not in result
 
+    # twitter:image from dict image
+    def test_image_from_dict(self):
+        obj = _FakeObj(
+            {
+                '@type': 'Article',
+                'name': 'Test',
+                'image': {'url': 'https://example.com/img.jpg', 'caption': 'A photo'},
+            }
+        )
+        result = str(twitter_for(obj))
+        assert 'twitter:image' in result
+        assert 'https://example.com/img.jpg' in result
+
+    # twitter:image from plain string
+    def test_image_from_string(self):
+        obj = _FakeObj(
+            {
+                '@type': 'WebSite',
+                'name': 'Test',
+                'image': 'https://example.com/photo.jpg',
+            }
+        )
+        result = str(twitter_for(obj))
+        assert 'twitter:image' in result
+        assert 'https://example.com/photo.jpg' in result
+
     # image alt text extracted from image caption
     def test_image_alt_from_caption(self):
         obj = _FakeObj(

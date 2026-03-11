@@ -1,3 +1,3 @@
-"""Template tags to assist in adding structured metadata to views and models."""
+"""Template tags for adding structured metadata to views and models."""
 
-__version__ = '0.9.0'
+__version__ = '0.10.0'
