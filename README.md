@@ -27,8 +27,8 @@ Define a `structured_data` property on your models. This is written in a standar
                 '@type': 'Person',
                 'name': self.author
             },
-            'datePublished': self.created.strftime('%Y-%m-%d'),
-            'dateModified': self.modified.strftime('%Y-%m-%d'),
+            'datePublished': self.created,
+            'dateModified': self.modified,
             'url': url,
             'mainEntityOfPage': {
                 '@type': 'WebPage',
@@ -68,7 +68,7 @@ your JSON-LD data as a standard HTML meta description tag.
 
 This software is released under the MIT license.
 ```
-Copyright (c) 2019-2024 Luke Rogers
+Copyright (c) 2019-2026 Luke Rogers
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
