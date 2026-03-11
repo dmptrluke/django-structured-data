@@ -2,11 +2,32 @@ import datetime
 import json
 from typing import Any
 
-from django.conf import settings
 from django.core.serializers.json import DjangoJSONEncoder
 from django.utils.html import format_html_join
 
-DEFAULT_STRUCTURED_DATA = getattr(settings, 'DEFAULT_STRUCTURED_DATA', {})
+ARTICLE_TYPES = ('Article', 'BlogPosting', 'NewsArticle')
+
+EVENT_TYPES = (
+    'Event',
+    'BusinessEvent',
+    'ChildrensEvent',
+    'ComedyEvent',
+    'DanceEvent',
+    'EducationEvent',
+    'ExhibitionEvent',
+    'Festival',
+    'FoodEvent',
+    'Hackathon',
+    'LiteraryEvent',
+    'MusicEvent',
+    'ScreeningEvent',
+    'SocialEvent',
+    'SportsEvent',
+    'TheaterEvent',
+    'VisualArtsEvent',
+)
+
+LARGE_IMAGE_TYPES = ARTICLE_TYPES + EVENT_TYPES + ('Recipe',)
 
 _json_script_escapes = {
     ord('>'): '\\u003E',
@@ -25,8 +46,8 @@ def format_time(value: Any) -> Any:
     return value
 
 
-def build_og_tags(properties: dict[str, Any]) -> str:
-    formatted = ((k, format_time(v)) for k, v in properties.items())
+def build_og_tags(properties: list[tuple[str, Any]]) -> str:
+    formatted = ((k, format_time(v)) for k, v in properties)
     return format_html_join('\n', '<meta property="{}" content="{}" />', formatted)
 
 
@@ -35,13 +56,20 @@ def build_meta_tags(properties: dict[str, Any]) -> str:
     return format_html_join('\n', '<meta name="{}" content="{}" />', formatted)
 
 
-def sub_defaults(data: dict[str, Any]) -> dict[str, Any]:
-    data_out = {}
-    # if value is None, pull value from DEFAULT_STRUCTURED_DATA by key
-    for key, value in data.items():
-        if value is None:
-            data_out[key] = DEFAULT_STRUCTURED_DATA[key]
-        else:
-            data_out[key] = value
+def extract_author_name(author: Any) -> str | None:
+    if isinstance(author, str):
+        return author
+    if isinstance(author, dict) and 'name' in author:
+        return author['name']
+    return None
 
-    return data_out
+
+def extract_location_name(location: Any) -> str | None:
+    if isinstance(location, str):
+        return location
+    if isinstance(location, dict):
+        if 'name' in location:
+            return location['name']
+        if isinstance(location.get('address'), dict) and 'name' in location['address']:
+            return location['address']['name']
+    return None
