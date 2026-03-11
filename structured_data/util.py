@@ -1,5 +1,6 @@
 import datetime
 import json
+from typing import Any
 
 from django.conf import settings
 from django.core.serializers.json import DjangoJSONEncoder
@@ -14,27 +15,27 @@ _json_script_escapes = {
 }
 
 
-def json_encode(data: dict) -> str:
+def json_encode(data: dict[str, Any]) -> str:
     return json.dumps(data, cls=DjangoJSONEncoder).translate(_json_script_escapes)
 
 
-def format_time(value):
+def format_time(value: Any) -> Any:
     if isinstance(value, (datetime.datetime, datetime.date, datetime.time)):
         return value.isoformat()
     return value
 
 
-def build_og_tags(properties: dict[str, str]) -> str:
+def build_og_tags(properties: dict[str, Any]) -> str:
     formatted = ((k, format_time(v)) for k, v in properties.items())
     return format_html_join('\n', '<meta property="{}" content="{}" />', formatted)
 
 
-def build_meta_tags(properties: dict[str, str]) -> str:
+def build_meta_tags(properties: dict[str, Any]) -> str:
     formatted = ((k, format_time(v)) for k, v in properties.items())
     return format_html_join('\n', '<meta name="{}" content="{}" />', formatted)
 
 
-def sub_defaults(data: dict) -> dict:
+def sub_defaults(data: dict[str, Any]) -> dict[str, Any]:
     data_out = {}
     # if value is None, pull value from DEFAULT_STRUCTURED_DATA by key
     for key, value in data.items():
