@@ -17,4 +17,4 @@ def meta_for(obj):
 
         return build_meta_tags(properties)
     else:
-        return ""
+        return ''

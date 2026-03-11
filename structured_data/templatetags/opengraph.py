@@ -35,11 +35,11 @@ def og_for(obj):
             properties['og:url'] = data['url']
 
         # special cased actions for websites
-        if data['@type'] == "WebSite":
+        if data['@type'] == 'WebSite':
             properties['og:type'] = 'website'
 
         # special cased actions for articles
-        if data['@type'] in ("BlogPosting", "Article", "NewsArticle"):
+        if data['@type'] in ('BlogPosting', 'Article', 'NewsArticle'):
             properties['og:type'] = 'article'
 
             if 'headline' in data:
@@ -51,4 +51,4 @@ def og_for(obj):
 
         return build_og_tags(properties)
     else:
-        return ""
+        return ''

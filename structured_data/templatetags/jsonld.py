@@ -13,12 +13,9 @@ def json_ld_for(obj):
         data = sub_defaults(obj.structured_data)
 
         if '@context' not in data:
-            data['@context'] = "https://schema.org"
+            data['@context'] = 'https://schema.org'
 
         encoded = json_encode(data)
-        return format_html(
-            '<script type="application/ld+json">{}</script>',
-            mark_safe(encoded)
-        )
+        return format_html('<script type="application/ld+json">{}</script>', mark_safe(encoded))
     else:
-        return ""
+        return ''

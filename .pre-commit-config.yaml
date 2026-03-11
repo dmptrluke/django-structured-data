@@ -16,19 +16,9 @@ repos:
     -   id: check-added-large-files
         args: ['--maxkb=1024']
 
--   repo: https://github.com/PyCQA/flake8
-    rev: 7.2.0
+-   repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.5
     hooks:
-    -   id: flake8
-        additional_dependencies: [flake8-django, flake8-builtins]
-
--   repo: https://github.com/PyCQA/isort
-    rev: 7.0.0
-    hooks:
-    -   id: isort
-
--   repo: https://github.com/asottile/pyupgrade
-    rev: v3.21.2
-    hooks:
-    -   id: pyupgrade
-        args: [--py313-plus]
+    -   id: ruff
+        args: [--fix]
+    -   id: ruff-format
