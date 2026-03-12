@@ -1,0 +1,48 @@
+# Changelog
+
+## Unreleased
+
+## 0.10.0 (2026-03-11)
+
+### Added
+
+- Added explicit `twitter:image` meta tag output from the `{% twitter_for %}` template tag. ([`89e8241`](https://github.com/dmptrluke/django-structured-data/commit/89e8241))
+
+## 0.9.0 (2026-03-11)
+
+### Added
+
+- Added event structured data support (`Event`, `MusicEvent`, `BusinessEvent`, etc.).
+- Added Twitter Card template tag (`{% twitter_for %}`) with card type, image alt text, and creator mappings.
+
+### Changed
+
+- Expanded Open Graph tags to map `author`, `articleSection`, `keywords` (as `article:tag`), and `og:image:alt`.
+- Expanded meta tags to map `author`, `keywords`, and `location`.
+
+### Removed
+
+- **Breaking:** removed `sub_defaults` helper and `DEFAULT_STRUCTURED_DATA` setting.
+
+([`0fde038`](https://github.com/dmptrluke/django-structured-data/commit/0fde038))
+
+## 0.8.0 (2026-03-11)
+
+### Added
+
+- Added `format_time` helper to auto-format `datetime`, `date`, and `time` objects in OG and meta tag values. ([`5a3663c`](https://github.com/dmptrluke/django-structured-data/commit/5a3663c))
+
+### Changed
+
+- Switched build system to hatchling, ruff, and uv. ([`468f98e`](https://github.com/dmptrluke/django-structured-data/commit/468f98e))
+- Updated README examples to pass datetime objects directly instead of pre-formatted strings. ([`d0dbcd6`](https://github.com/dmptrluke/django-structured-data/commit/d0dbcd6))
+
+## 0.7.0 (2026-03-05)
+
+### Changed
+
+- Updated supported Python versions to 3.10-3.13. ([`0803025`](https://github.com/dmptrluke/django-structured-data/commit/0803025))
+
+## 0.6.0
+
+Previous release.
