@@ -56,6 +56,14 @@ def build_meta_tags(properties: dict[str, Any]) -> str:
     return format_html_join('\n', '<meta name="{}" content="{}" />', formatted)
 
 
+def resolve_structured_data(obj: Any) -> dict | None:
+    if isinstance(obj, dict):
+        return obj
+    if hasattr(obj, 'structured_data'):
+        return obj.structured_data
+    return None
+
+
 def extract_author_name(author: Any) -> str | None:
     if isinstance(author, str):
         return author

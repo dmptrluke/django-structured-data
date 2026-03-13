@@ -1,14 +1,14 @@
 from django import template
 
-from ..util import build_meta_tags, extract_author_name, extract_location_name
+from ..util import build_meta_tags, extract_author_name, extract_location_name, resolve_structured_data
 
 register = template.Library()
 
 
 @register.simple_tag()
 def meta_for(obj):
-    if hasattr(obj, 'structured_data'):
-        data = obj.structured_data
+    data = resolve_structured_data(obj)
+    if data is not None:
         properties = {}
 
         if 'description' in data:

@@ -1,14 +1,15 @@
 from django import template
+from django.conf import settings
 
-from ..util import ARTICLE_TYPES, build_og_tags
+from ..util import ARTICLE_TYPES, build_og_tags, resolve_structured_data
 
 register = template.Library()
 
 
 @register.simple_tag()
 def og_for(obj):
-    if hasattr(obj, 'structured_data'):
-        data = obj.structured_data
+    data = resolve_structured_data(obj)
+    if data is not None:
         schema_type = data.get('@type')
         properties = []
 
@@ -60,3 +61,9 @@ def og_for(obj):
         return build_og_tags(properties)
     else:
         return ''
+
+
+@register.simple_tag()
+def og_sitewide():
+    properties = getattr(settings, 'STRUCTURED_DATA_SITEWIDE_OG', {})
+    return build_og_tags(list(properties.items()))

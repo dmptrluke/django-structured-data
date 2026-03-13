@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+## 0.11.0 (2026-03-13)
+
+### Added
+
+- Added dict passthrough support to all template tags - plain dicts can now be passed directly to `json_ld_for`, `og_for`, `meta_for`, and `twitter_for`.
+- Added `StructuredDataMixin` view mixin for injecting structured data into template context from class-based views.
+- Added `json_ld_sitewide` template tag and `STRUCTURED_DATA_SITEWIDE` setting for rendering sitewide JSON-LD blocks.
+- Added `og_sitewide` template tag and `STRUCTURED_DATA_SITEWIDE_OG` setting for rendering sitewide Open Graph tags.
+
+### Changed
+
+- Restructured README into a quickstart guide with detailed documentation moved to `docs/`.
+
 ## 0.10.0 (2026-03-11)
 
 ### Added

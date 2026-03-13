@@ -1,12 +1,22 @@
 import datetime
 
-from django.test import SimpleTestCase
+from django.test import RequestFactory, SimpleTestCase, override_settings
+from django.views.generic import TemplateView
 
-from .templatetags.jsonld import json_ld_for
+from .templatetags.jsonld import json_ld_for, json_ld_sitewide
 from .templatetags.meta import meta_for
-from .templatetags.opengraph import og_for
+from .templatetags.opengraph import og_for, og_sitewide
 from .templatetags.twitter import twitter_for
-from .util import build_meta_tags, build_og_tags, extract_author_name, extract_location_name, format_time, json_encode
+from .util import (
+    build_meta_tags,
+    build_og_tags,
+    extract_author_name,
+    extract_location_name,
+    format_time,
+    json_encode,
+    resolve_structured_data,
+)
+from .views import StructuredDataMixin
 
 
 class FormatTimeTests(SimpleTestCase):
@@ -506,3 +516,183 @@ class TwitterForTests(SimpleTestCase):
     def test_no_structured_data(self):
         result = str(twitter_for(object()))
         assert result == ''
+
+
+class ResolveStructuredDataTests(SimpleTestCase):
+    # returns dict as-is
+    def test_dict_passthrough(self):
+        data = {'@type': 'WebSite', 'name': 'Test'}
+        assert resolve_structured_data(data) is data
+
+    # returns structured_data attribute from object
+    def test_object_attribute(self):
+        obj = _FakeObj({'@type': 'WebSite', 'name': 'Test'})
+        assert resolve_structured_data(obj) == {'@type': 'WebSite', 'name': 'Test'}
+
+    # returns None for unsupported input
+    def test_unsupported_input(self):
+        assert resolve_structured_data(42) is None
+        assert resolve_structured_data('hello') is None
+        assert resolve_structured_data(object()) is None
+
+
+class DictPassthroughTests(SimpleTestCase):
+    # json_ld_for renders a plain dict
+    def test_json_ld_for_dict(self):
+        result = str(json_ld_for({'@type': 'WebSite', 'name': 'Test'}))
+        assert '<script type="application/ld+json">' in result
+        assert 'https://schema.org' in result
+        assert 'Test' in result
+
+    # og_for renders a plain dict
+    def test_og_for_dict(self):
+        result = str(og_for({'@type': 'WebSite', 'name': 'Test', 'description': 'A site'}))
+        assert 'og:title' in result
+        assert 'og:description' in result
+
+    # meta_for renders a plain dict
+    def test_meta_for_dict(self):
+        result = str(meta_for({'@type': 'Article', 'description': 'A test'}))
+        assert 'name="description"' in result
+        assert 'A test' in result
+
+    # twitter_for renders a plain dict
+    def test_twitter_for_dict(self):
+        result = str(twitter_for({'@type': 'Article', 'name': 'Test'}))
+        assert 'twitter:card' in result
+        assert 'summary_large_image' in result
+
+    # all tags return empty string for non-dict, non-object input
+    def test_all_tags_empty_for_invalid(self):
+        assert str(json_ld_for(42)) == ''
+        assert str(og_for(42)) == ''
+        assert str(meta_for(42)) == ''
+        assert str(twitter_for(42)) == ''
+
+    # json_ld_for does not mutate the original dict
+    def test_json_ld_for_no_mutation(self):
+        data = {'@type': 'WebSite', 'name': 'Test'}
+        json_ld_for(data)
+        assert '@context' not in data
+
+
+class StructuredDataMixinTests(SimpleTestCase):
+    # mixin injects structured_data into template context
+    def test_injects_context(self):
+        class TestView(StructuredDataMixin, TemplateView):
+            template_name = 'test.html'
+
+            def get_structured_data(self):
+                return {'@type': 'WebSite', 'name': 'Test'}
+
+        request = RequestFactory().get('/')
+        view = TestView()
+        view.setup(request)
+        context = view.get_context_data()
+        assert context['structured_data'] == {'@type': 'WebSite', 'name': 'Test'}
+
+    # mixin does not inject when get_structured_data returns None
+    def test_no_injection_on_none(self):
+        class TestView(StructuredDataMixin, TemplateView):
+            template_name = 'test.html'
+
+        request = RequestFactory().get('/')
+        view = TestView()
+        view.setup(request)
+        context = view.get_context_data()
+        assert 'structured_data' not in context
+
+    # mixin preserves other context from super
+    def test_cooperative_inheritance(self):
+        class TestView(StructuredDataMixin, TemplateView):
+            template_name = 'test.html'
+
+            def get_structured_data(self):
+                return {'@type': 'WebSite'}
+
+            def get_context_data(self, **kwargs):
+                context = super().get_context_data(**kwargs)
+                context['extra'] = 'value'
+                return context
+
+        request = RequestFactory().get('/')
+        view = TestView()
+        view.setup(request)
+        context = view.get_context_data()
+        assert context['structured_data'] == {'@type': 'WebSite'}
+        assert context['extra'] == 'value'
+
+
+class JsonLdSitewideTests(SimpleTestCase):
+    # renders all items from setting
+    @override_settings(
+        STRUCTURED_DATA_SITEWIDE=[
+            {'@type': 'Organization', 'name': 'Acme'},
+            {'@type': 'WebSite', 'name': 'Acme Site'},
+        ]
+    )
+    def test_renders_all_items(self):
+        result = str(json_ld_sitewide())
+        assert result.count('<script type="application/ld+json">') == 2
+        assert 'Acme' in result
+        assert 'Acme Site' in result
+
+    # adds @context when missing
+    @override_settings(STRUCTURED_DATA_SITEWIDE=[{'@type': 'Organization', 'name': 'Test'}])
+    def test_adds_context(self):
+        result = str(json_ld_sitewide())
+        assert 'https://schema.org' in result
+
+    # preserves existing @context
+    @override_settings(
+        STRUCTURED_DATA_SITEWIDE=[
+            {'@context': 'https://custom.org', '@type': 'Organization', 'name': 'Test'},
+        ]
+    )
+    def test_preserves_existing_context(self):
+        result = str(json_ld_sitewide())
+        assert 'https://custom.org' in result
+        assert 'schema.org' not in result
+
+    # returns empty string when setting is absent
+    def test_empty_when_absent(self):
+        result = str(json_ld_sitewide())
+        assert result == ''
+
+    # XSS-sensitive characters are escaped
+    @override_settings(STRUCTURED_DATA_SITEWIDE=[{'@type': 'Organization', 'name': '<script>alert("xss")</script>'}])
+    def test_xss_escaping(self):
+        result = str(json_ld_sitewide())
+        assert '<script>alert' not in result
+        assert '\\u003C' in result
+
+    # does not mutate the original setting dicts
+    @override_settings(STRUCTURED_DATA_SITEWIDE=[{'@type': 'Organization', 'name': 'Test'}])
+    def test_no_mutation(self):
+        from django.conf import settings
+
+        json_ld_sitewide()
+        assert '@context' not in settings.STRUCTURED_DATA_SITEWIDE[0]
+
+
+class OgSitewideTests(SimpleTestCase):
+    # renders properties from setting
+    @override_settings(STRUCTURED_DATA_SITEWIDE_OG={'og:site_name': 'My Site', 'og:locale': 'en_US'})
+    def test_renders_properties(self):
+        result = str(og_sitewide())
+        assert 'og:site_name' in result
+        assert 'My Site' in result
+        assert 'og:locale' in result
+        assert 'en_US' in result
+
+    # returns empty string when setting is absent
+    def test_empty_when_absent(self):
+        result = str(og_sitewide())
+        assert result == ''
+
+    # HTML-escapes content values
+    @override_settings(STRUCTURED_DATA_SITEWIDE_OG={'og:site_name': 'A & B <script>'})
+    def test_html_escaping(self):
+        result = str(og_sitewide())
+        assert '&amp;' in result
+        assert '<script>' not in result

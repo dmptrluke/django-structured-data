@@ -1,14 +1,14 @@
 from django import template
 
-from ..util import LARGE_IMAGE_TYPES, build_meta_tags, extract_author_name
+from ..util import LARGE_IMAGE_TYPES, build_meta_tags, extract_author_name, resolve_structured_data
 
 register = template.Library()
 
 
 @register.simple_tag()
 def twitter_for(obj):
-    if hasattr(obj, 'structured_data'):
-        data = obj.structured_data
+    data = resolve_structured_data(obj)
+    if data is not None:
         properties = {}
 
         if data.get('@type') in LARGE_IMAGE_TYPES:
