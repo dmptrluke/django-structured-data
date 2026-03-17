@@ -28,7 +28,26 @@ STRUCTURED_DATA_SITEWIDE = [
 {% json_ld_sitewide %}
 ```
 
-Each dict in the list gets its own `<script type="application/ld+json">` block. `@context` is added automatically if missing
+Each dict in the list gets its own `<script type="application/ld+json">` block. `@context` is added automatically if missing.
+
+### Callable support
+
+Both settings accept a callable instead of a static value. The callable is invoked at template render time, allowing dynamic content (e.g. from a database model):
+
+```python
+def get_sitewide_jsonld():
+    from myapp.models import SiteSettings
+    s = SiteSettings.objects.get()
+    return [
+        {
+            '@type': 'Organization',
+            'name': s.org_name,
+            'url': 'https://example.com',
+        },
+    ]
+
+STRUCTURED_DATA_SITEWIDE = get_sitewide_jsonld
+```
 
 For request-dependent data, use the [View Mixin](view-mixin.md) instead.
 

@@ -66,4 +66,6 @@ def og_for(obj):
 @register.simple_tag()
 def og_sitewide():
     properties = getattr(settings, 'STRUCTURED_DATA_SITEWIDE_OG', {})
+    if callable(properties):
+        properties = properties()
     return build_og_tags(list(properties.items()))

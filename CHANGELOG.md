@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 0.12.0 (2026-03-18)
+
+### Added
+
+- `STRUCTURED_DATA_SITEWIDE` and `STRUCTURED_DATA_SITEWIDE_OG` now accept callables, invoked at render time for dynamic values (e.g. reading from a database model).
+
 ## 0.11.0 (2026-03-13)
 
 ### Added

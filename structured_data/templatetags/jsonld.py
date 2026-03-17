@@ -25,6 +25,8 @@ def json_ld_for(obj):
 @register.simple_tag()
 def json_ld_sitewide():
     data_list = getattr(settings, 'STRUCTURED_DATA_SITEWIDE', [])
+    if callable(data_list):
+        data_list = data_list()
     fragments = []
     for data in data_list:
         data = data.copy()
