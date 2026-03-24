@@ -1,6 +1,11 @@
 # Changelog
 
-## Unreleased
+## 0.13.0 (2026-03-25)
+
+### Changed
+
+- Bump minimum Django version to 4.2.
+- Add CI and release workflows, update Django classifiers.
 
 ## 0.12.0 (2026-03-18)
 
