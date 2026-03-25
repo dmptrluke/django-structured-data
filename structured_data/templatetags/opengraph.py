@@ -7,7 +7,7 @@ register = template.Library()
 
 
 @register.simple_tag()
-def og_for(obj):
+def og_for(obj):  # noqa: C901
     data = resolve_structured_data(obj)
     if data is not None:
         schema_type = data.get('@type')

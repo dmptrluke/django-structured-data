@@ -3,11 +3,11 @@ import datetime
 from django.test import RequestFactory, SimpleTestCase, override_settings
 from django.views.generic import TemplateView
 
-from .templatetags.jsonld import json_ld_for, json_ld_sitewide
-from .templatetags.meta import meta_for
-from .templatetags.opengraph import og_for, og_sitewide
-from .templatetags.twitter import twitter_for
-from .util import (
+from ..templatetags.jsonld import json_ld_for, json_ld_sitewide
+from ..templatetags.meta import meta_for
+from ..templatetags.opengraph import og_for, og_sitewide
+from ..templatetags.twitter import twitter_for
+from ..util import (
     build_meta_tags,
     build_og_tags,
     extract_author_name,
@@ -16,7 +16,7 @@ from .util import (
     json_encode,
     resolve_structured_data,
 )
-from .views import StructuredDataMixin
+from ..views import StructuredDataMixin
 
 
 class FormatTimeTests(SimpleTestCase):
