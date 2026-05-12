@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.13.4 (2026-05-12)
+
+- Bump dependencies
+
 ## 0.13.2 (2026-03-31)
 
 - Improve PyPI metadata: add project URLs (Issues, Changelog), keywords, and SPDX license format

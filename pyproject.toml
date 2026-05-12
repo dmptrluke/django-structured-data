@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "django-structured-data"
-version = "0.13.2"
+version = "0.13.4"
 description = "A simple Django module for adding structured data and OpenGraph tags to your views."
 readme = "README.md"
 requires-python = ">=3.10"
