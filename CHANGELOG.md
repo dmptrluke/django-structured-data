@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.14.0 (2026-05-12)
+
+- Bump dependencies
+- Upate supported versions
+
 ## 0.13.4 (2026-05-12)
 
 - Bump dependencies
